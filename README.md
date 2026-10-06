@@ -329,8 +329,7 @@ Planned improvements include:
 
 **Sayali Pandav**
 
-Information Technology Engineering Student  
-MMCOE, Pune
+
 
 ---
 
