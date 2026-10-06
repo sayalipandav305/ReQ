@@ -6,6 +6,7 @@ from app.api.subjects import router as subjects_router
 
 from app.database import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
+from app.api.ai import router as ai_router
 
 # Import models so SQLAlchemy registers them
 from app.models import User, Subject
@@ -41,6 +42,10 @@ app.include_router(auth_router)
 
 # New subject routes
 app.include_router(subjects_router)
+
+
+# New AI routes
+app.include_router(ai_router)
 
 
 @app.get("/")

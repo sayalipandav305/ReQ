@@ -72,3 +72,38 @@ export async function deleteSubject(subjectId: number): Promise<void> {
     method: "DELETE",
   });
 }
+
+export async function askReQAI(
+  question: string,
+  marks: number,
+  subject: string,
+  unit: number | null,
+  mode: "exam" | "learn" | "revise"
+) {
+  const response = await fetch(`${API_BASE_URL}/ai/answer`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      question,
+      marks,
+      subject,
+      unit,
+      mode,
+    }),
+  });
+
+  if (!response.ok) {
+    let message = "AI could not generate an answer.";
+
+    try {
+      const data = await response.json();
+      message = data.detail || message;
+    } catch {}
+
+    throw new Error(message);
+  }
+
+  return response.json();
+}
