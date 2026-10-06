@@ -1,68 +1,127 @@
-# ReQ — Repeated Question Analyzer 📚
+# ReQ — Question Paper Analyzer
 
-ReQ is a web application that helps students analyze university question papers and identify frequently repeated or similar questions.
+> **Analyze. Understand. Revise. Ace.**
 
-Instead of manually going through multiple previous-year papers, ReQ analyzes them and presents a clean, deduplicated list of questions along with their repetition frequency and the papers in which they appeared.
+ReQ is an AI-powered question paper analyzer designed to help engineering students study smarter by analyzing previous question papers, identifying repeated questions, tracking preparation progress, and generating exam-ready answers using local AI.
+
+---
 
 ## ✨ Features
 
-- 📄 Upload multiple question-paper PDFs
-- 🔍 Automatically extract questions from PDFs
-- 🧠 Detect repeated and semantically similar questions
-- 🔁 Show how many times a question has been repeated
-- 📚 Show the papers in which a question appeared
-- 📌 Organize questions by unit
-- 🔎 Search questions instantly
-- ↕️ Filter and sort questions
-- ✅ Mark questions as completed
-- ⭐ Star important questions for revision
-- 📝 Add personal notes
-- 👤 User registration and login
-- 📂 Subject-wise question paper analysis
-- 📊 View question-paper analysis and repetition patterns
+### 📄 Question Paper Analysis
+- Upload multiple question papers
+- Automatically extract questions from uploaded papers
+- Organize questions by unit, marks, paper, and question number
+- View all analyzed questions in one place
 
-## 🎯 Why ReQ?
+### 🔁 Repeated Question Detection
+- Detects repeated and similar questions using semantic similarity
+- Displays each unique question only once
+- Shows how many times a question has appeared
+- Shows the papers and question numbers where it appeared
+- Handles nested subquestions such as `i)`, `ii)`, `a)`, `b)`
 
-Students often prepare for exams by going through several previous-year question papers.
+### 📊 Study Dashboard
+- Track overall preparation progress
+- View questions by:
+  - Study
+  - Repeated
+  - Units
+  - Papers
+- Search and filter questions
+- Filter by unit, paper, and completion status
+- Sort questions for easier revision
 
-The problem is that the same question may appear:
+### ✅ Question Progress
+- Mark questions as completed
+- Star important questions
+- Create a revision-focused question list
+- Add personal notes
+- Track study progress visually
 
-- with slightly different wording
-- in different papers
-- under different question numbers
-- multiple times across different years
+### 🤖 Ask ReQ AI
 
-ReQ reduces this manual work by identifying similar questions and grouping them together.
+Generate answers directly from any question using local AI.
 
-### Example
+ReQ supports three answer modes:
 
-Instead of displaying:
+#### ✍️ Exam
+Generate a university-ready answer structured according to the marks.
+
+#### 🧠 Learn
+Understand the concept through simple explanations focused on **why** and **how**.
+
+#### ⚡ Revise
+Get short, memorable revision points, keywords, definitions, formulas, and examples.
+
+### 📝 Marks-Aware Answers
+ReQ automatically adjusts answer depth according to the marks:
+
+| Marks | Answer Style |
+|---|---|
+| 1–2 | Concise definition / key points |
+| 3–4 | Short explanation |
+| 5–6 | Moderately detailed answer |
+| 7–8 | Detailed structured answer |
+| 9–10 | Comprehensive answer |
+
+### 🔹 Subquestion-Aware AI
+ReQ understands questions containing multiple parts.
+
+For example:
 
 ```text
-2022 — Explain the OSI model.
+Q6(b) Write Short note on
 
-2023 — Explain the OSI reference model.
-
-2024 — Describe the OSI model and its layers.
-
-2025 — Explain OSI model with all layers.
+i) Representation Learning
+ii) Distributed Representation
 ```
 
-ReQ can group them as:
+ReQ generates separate answers for:
 
 ```text
-Explain the OSI model and its layers.
+i) Representation Learning
 
-Repeated: 4 times
-
-Appeared in:
-• 2022
-• 2023
-• 2024
-• 2025
+ii) Distributed Representation
 ```
 
-This allows students to focus on the questions that are most likely to be important.
+instead of combining them into one unrelated answer.
+
+### 💾 Save AI Answers
+- Save generated answers for revision
+- Copy answers with one click
+- Answers are stored locally
+- Revisit saved answers while studying
+
+---
+
+## 🧠 How ReQ Detects Repeated Questions
+
+ReQ uses semantic similarity rather than relying only on exact text matching.
+
+The question repetition system uses:
+
+- **Sentence Transformers**
+- `all-MiniLM-L6-v2`
+- Cosine similarity
+
+This allows ReQ to identify questions that are worded differently but ask essentially the same thing.
+
+---
+
+## 🤖 Local AI
+
+ReQ uses local AI for answer generation.
+
+### AI Stack
+
+- **Ollama**
+- **Qwen**
+- FastAPI backend
+
+Because the model runs locally, ReQ does not require sending study questions to an external AI API for answer generation.
+
+---
 
 ## 🛠️ Tech Stack
 
@@ -72,57 +131,28 @@ This allows students to focus on the questions that are most likely to be import
 - TypeScript
 - Vite
 - Tailwind CSS
-- Lucide React
 
 ### Backend
 
 - Python
 - FastAPI
-- PyMuPDF
+- Uvicorn
+
+### AI & NLP
+
+- Ollama
+- Qwen
 - Sentence Transformers
-- scikit-learn
+- `all-MiniLM-L6-v2`
+- Scikit-learn
 
-### Database
+### Data Processing
 
-- SQLite
-- SQLAlchemy
+- PDF question paper processing
+- Semantic similarity analysis
+- Local browser storage for saved study data
 
-### Authentication
-
-- JWT
-- Argon2 password hashing
-
-## 🧠 How Repetition Detection Works
-
-ReQ uses semantic similarity instead of relying only on exact text matching.
-
-The question text is converted into vector embeddings using:
-
-```text
-all-MiniLM-L6-v2
-```
-
-The embeddings are then compared using cosine similarity.
-
-This allows ReQ to identify questions that have similar meanings even when their wording is different.
-
-### Example
-
-```text
-"Explain the OSI model."
-
-        ↓
-
-"Describe the OSI reference model."
-
-        ↓
-
-Semantic similarity
-
-        ↓
-
-Repeated question group
-```
+---
 
 ## 📁 Project Structure
 
@@ -132,98 +162,95 @@ ReQ/
 ├── backend/
 │   ├── app/
 │   │   ├── api/
-│   │   ├── models/
-│   │   ├── schemas/
 │   │   ├── services/
-│   │   ├── auth.py
-│   │   ├── database.py
 │   │   └── main.py
 │   │
-│   ├── requirements.txt
-│   └── test_semantic.py
+│   └── ...
 │
 ├── frontend/
-│   ├── public/
 │   ├── src/
-│   │   ├── assets/
+│   │   ├── components/
+│   │   ├── pages/
 │   │   ├── services/
-│   │   ├── App.tsx
-│   │   ├── App.css
-│   │   └── index.css
+│   │   └── App.tsx
 │   │
-│   ├── package.json
-│   └── vite.config.ts
+│   └── ...
 │
-├── .gitignore
-└── README.md
+├── README.md
+└── ...
 ```
+
+---
 
 ## 🚀 Getting Started
 
-### Prerequisites
+### 1. Clone the repository
 
-Make sure you have installed:
+```bash
+git clone https://github.com/sayalipandav305/ReQ.git
+cd ReQ
+```
 
-- Python 3.10+
-- Node.js 18+
-- npm
-- Git
+---
 
-## ⚙️ Backend Setup
+### 2. Backend Setup
 
-Open a terminal inside the project folder.
+Navigate to the backend:
 
 ```bash
 cd backend
 ```
 
-### Create a virtual environment
-
-macOS / Linux:
+Create and activate a virtual environment:
 
 ```bash
 python3 -m venv venv
-```
-
-Activate it:
-
-```bash
 source venv/bin/activate
 ```
 
-Windows:
-
-```bash
-venv\Scripts\activate
-```
-
-### Install dependencies
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Start the FastAPI server
+Start the FastAPI server:
 
 ```bash
-python -m uvicorn app.main:app --reload
+uvicorn app.main:app --reload
 ```
 
-The backend will run at:
+The backend will run on:
 
 ```text
 http://127.0.0.1:8000
 ```
 
-FastAPI documentation:
+---
 
-```text
-http://127.0.0.1:8000/docs
+### 3. Ollama Setup
+
+Install and run Ollama, then make sure the required Qwen model is available locally.
+
+For example:
+
+```bash
+ollama pull qwen2.5:7b
 ```
 
-## 💻 Frontend Setup
+Start Ollama if required:
 
-Open a new terminal.
+```bash
+ollama serve
+```
+
+> The exact model name may depend on the model configured in `ai_service.py`.
+
+---
+
+### 4. Frontend Setup
+
+Open another terminal:
 
 ```bash
 cd frontend
@@ -241,143 +268,74 @@ Start the development server:
 npm run dev
 ```
 
-The frontend will normally run at:
+Then open the local URL shown by Vite.
+
+---
+
+## 🔄 How ReQ Works
 
 ```text
-http://localhost:5173
+Upload Question Papers
+        ↓
+Extract Questions
+        ↓
+Analyze Questions
+        ↓
+Detect Similar / Repeated Questions
+        ↓
+Organize by Unit, Marks & Paper
+        ↓
+Track Study Progress
+        ↓
+Ask ReQ AI
+        ↓
+┌───────────────┬───────────────┬───────────────┐
+│     Exam      │     Learn     │     Revise    │
+│      ✍️       │      🧠       │       ⚡       │
+└───────────────┴───────────────┴───────────────┘
+        ↓
+Save / Copy / Revise
 ```
 
-Open the URL in your browser.
+---
 
-## 📖 How to Use ReQ
+## 🎯 Why ReQ?
 
-### 1. Create an account
+Traditional question-paper analysis usually means manually going through multiple PDFs and trying to remember which questions have appeared before.
 
-Register using your name, email and password.
+ReQ turns that process into a structured study workflow:
 
-### 2. Select a subject
+**Find what matters → Understand it → Track it → Revise it.**
 
-Create or select the subject you want to study.
+Instead of repeatedly searching through old papers, students can immediately see which questions are important and how frequently they appear.
 
-### 3. Upload question papers
+---
 
-Upload multiple university question-paper PDFs.
-
-For meaningful repetition analysis, upload at least two papers.
-
-### 4. Analyze
-
-ReQ extracts the questions and compares them using semantic similarity.
-
-### 5. Study repeated questions
-
-The results show:
-
-- Unique questions
-- Repeated questions
-- Repetition count
-- Papers where they appeared
-- Units
-- Marks
-
-### 6. Track your preparation
-
-Use:
-
-- ✅ Completed
-- ⭐ Starred
-- 📝 Notes
-
-to organize your revision.
-
-## 🔐 Environment Variables
-
-For local development, configure environment variables as required by the backend and frontend.
-
-Do not commit:
-
-```text
-.env
-```
-
-or any API keys, passwords, authentication secrets, or private credentials to GitHub.
-
-## 🗃️ Database
-
-The local development version uses SQLite.
-
-The database file is intentionally excluded from Git using `.gitignore`.
-
-When running the backend locally, the database will be created automatically according to the backend configuration.
-
-## 🔒 Security
-
-ReQ uses:
-
-- JWT-based authentication
-- Password hashing with Argon2
-- User-specific subjects and analysis
-- Protected API endpoints
-
-Never expose production secrets or credentials in the source code.
-
-## 🚧 Project Status
-
-ReQ is currently under active development.
+## 🔮 Future Improvements
 
 Planned improvements include:
 
-- Persistent analysis history
-- Improved question parsing
-- More accurate semantic matching
-- Detailed analytics and visualizations
-- Cloud deployment
-- Mobile-friendly improvements
-- Better study recommendations
-- Production database support
+- AI-generated study plans
+- Important-question predictions
+- Advanced revision dashboard
+- More detailed analytics
+- Answer history / revision vault
+- Improved question-paper parsing
+- More AI-powered study tools
 
-## 🌐 Deployment
-
-The frontend can be deployed using platforms such as Netlify.
-
-The FastAPI backend needs to be deployed separately on a backend hosting platform.
-
-A production deployment can follow this architecture:
-
-```text
-                    ┌──────────────────┐
-                    │     GitHub       │
-                    │   Source Code    │
-                    └────────┬─────────┘
-                             │
-                ┌────────────┴────────────┐
-                │                         │
-                ▼                         ▼
-        ┌──────────────┐          ┌──────────────┐
-        │   Netlify    │          │   Backend    │
-        │    React     │ ───────► │   FastAPI    │
-        │   Frontend   │          │              │
-        └──────────────┘          └──────┬───────┘
-                                         │
-                                         ▼
-                                  ┌──────────────┐
-                                  │   Database   │
-                                  └──────────────┘
-```
-
-## 🤝 Contributing
-
-Contributions, suggestions and improvements are welcome.
-
-If you find a bug or have an idea for a new feature, feel free to open an issue.
+---
 
 ## 👩‍💻 Author
 
 **Sayali Pandav**
 
 Information Technology Engineering Student  
-Pune, India
+MMCOE, Pune
 
-## ⭐ If you find ReQ useful
+---
 
-Give the repository a ⭐ on GitHub!
+## 📌 Project Status
+
+🚧 **Actively under development**
+
+ReQ is being continuously improved with new AI-powered study and revision features.
